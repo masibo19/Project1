@@ -1,0 +1,84 @@
+#include <iostream>
+#include <Eigen/Dense>
+#include <unsupported/Eigen/FFT>
+#include <vector>
+#include <complex>
+
+using namespace std;
+using namespace Eigen;
+
+// 基类
+class FFTTransformer {
+public:
+    virtual ~FFTTransformer() = default;
+    virtual MatrixXcd transform(const MatrixXcd& X, int n) const = 0;
+};
+
+// 行变换派生类
+class RowFFTTransformer : public FFTTransformer {
+public:
+    MatrixXcd transform(const MatrixXcd& X, int n) const override {
+        FFT<double> fft;
+        MatrixXcd Y(X.rows(), n);
+        for (int i = 0; i < X.rows(); ++i) {
+            VectorXcd row = X.row(i).head(n);
+            VectorXcd transformed_row(n);
+            fft.fwd(transformed_row, row);
+            Y.row(i) = transformed_row;
+        }
+        return Y;
+    }
+};
+
+// 列变换派生类
+class ColFFTTransformer : public FFTTransformer {
+public:
+    MatrixXcd transform(const MatrixXcd& X, int n) const override {
+        FFT<double> fft;
+        MatrixXcd Y(n, X.cols());
+        for (int i = 0; i < X.cols(); ++i) {
+            VectorXcd col = X.col(i).head(n);
+            VectorXcd transformed_col(n);
+            fft.fwd(transformed_col, col);
+            Y.col(i) = transformed_col;
+        }
+        return Y;
+    }
+};
+
+// 工厂函数，根据dim返回对应的FFTTransformer对象
+unique_ptr<FFTTransformer> createFFTTransformer(int dim) {
+    if (dim == 2) {
+        return make_unique<RowFFTTransformer>();
+    } else if (dim == 1) {
+        return make_unique<ColFFTTransformer>();
+    } else {
+        throw invalid_argument("dim must be 1 or 2");
+    }
+}
+
+int main() {
+    // 创建一个复数矩阵X
+    MatrixXcd X(3, 4);
+    X << 1, 2, 3, 4,
+            5, 6, 7, 8,
+            9, 10, 11, 12;
+
+    // 设置变换点数n
+    int n = 4;
+
+    // 设置变换维度dim
+    int dim = 2;  // 2表示对每一行进行变换
+
+    // 创建FFTTransformer对象
+    auto transformer = createFFTTransformer(dim);
+
+    // 调用transform函数
+    MatrixXcd Y = transformer->transform(X, n);
+
+    // 输出结果
+    cout << "Fourier transform result Y:" << endl;
+    cout << Y << endl;
+
+    return 0;
+}
