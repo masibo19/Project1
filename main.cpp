@@ -1,8 +1,10 @@
 #include <iostream>
 #include <Eigen/Dense>
+#include <Eigen/Core>
 #include <unsupported/Eigen/FFT>
+#include <complex>
 using namespace Eigen;
-
+using namespace std;
 namespace FFTLibrary {
     Eigen::VectorXcd fft(const Eigen::VectorXd& input)
     {
@@ -36,13 +38,42 @@ Eigen::VectorXcd fft(const Eigen::VectorXd& x, int N) {
 
     return result;
 }
+
+
+template<typename T>
+MatrixXcd fft(const MatrixX<T>& X, int n, int dim) {
+    FFT<T> fft;
+    MatrixXcd Y = MatrixXcd::Zero(X.rows(), X.cols());
+
+    // 将输入矩阵转换为复数矩阵
+    MatrixXcd X_cd = X.cast<std::complex<T>>();
+
+    if (dim == 1) { // 对列进行FFT
+        for (int i = 0; i < X.cols(); ++i) {
+            VectorXcd col = X_cd.col(i);
+            fft.fwd(col);
+            Y.col(i) = col;
+        }
+    } else if (dim == 2) { // 对行进行FFT
+        for (int i = 0; i < X.rows(); ++i) {
+            VectorXcd row = X_cd.row(i);
+            fft.fwd(row);
+            Y.row(i) = row;
+        }
+    } else {
+        cerr << "Unsupported dimension for FFT." << endl;
+    }
+
+    return Y;
+}
+
 int main() {
     Eigen::VectorXd vec(8);
     vec << 1, 2, 3, 4, 5, 6, 7, 8;
 
     Eigen::VectorXcd result = FFTLibrary::fft(vec);
 
-    std::cout << "FFT result:" << std::endl;
+    std::cout << "FFT(X) result:" << std::endl;
     for (int i = 0; i < result.size(); ++i) {
         std::cout << result(i).real() << " + " << result(i).imag() << "i" << std::endl;
     }
@@ -55,9 +86,19 @@ int main() {
     Eigen::VectorXcd result1 = fft(v, N);
 
     // 输出结果
-    std::cout << "FFT result:" << std::endl;
+    std::cout << "FFT(X,n) result:" << std::endl;
     for (int i = 0; i < result1.size(); ++i) {
         std::cout << result1(i).real() << " + " << result1(i).imag() << "i" << std::endl;
     }
+    MatrixXd X(3, 3);
+    X << 1, 2, 3,
+            4, 5, 6,
+            7, 8, 9;
+
+
+    MatrixXcd Y = fft<double>(X, 0, 2); // 对行进行FFT
+
+    cout << "FFT(X,n,dim) result(dim=2):\n" << Y << endl;
+
     return 0;
 }
