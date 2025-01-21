@@ -97,7 +97,6 @@ int main() {
 
 
     MatrixXcd Y = fft<double>(X, 0, 2); // 对行进行FFT
-
     cout << "FFT(X,n,dim) result(dim=2):\n" << Y << endl;
 
     return 0;
