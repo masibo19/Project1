@@ -18,7 +18,7 @@ int main() {
     std::cout << "fft(X, 4):\n" << Y2 << "\n\n";
 
     //Y = fft(X, n, dim)
-    Eigen::MatrixXcd Y3 = FFTLibrary::fft(X, 4, 1);
+    Eigen::MatrixXcd Y3 = FFTLibrary::fft(X, 4, 2);
     std::cout << "fft(X, 4, 2):\n" << Y3 << "\n\n";
 
     return 0;
