@@ -12,7 +12,9 @@ namespace FFTLibrary {
     Eigen::MatrixXcd fft(const Eigen::MatrixXd& X); // Y = fft(X)
     Eigen::MatrixXcd fft(const Eigen::MatrixXd& X, int n); // Y = fft(X, n)
     Eigen::MatrixXcd fft(const Eigen::MatrixXd& X, int n, int dim); // Y = fft(X, n, dim)
-
+    Eigen::MatrixXcd ifft(const Eigen::MatrixXcd& X);
+    Eigen::MatrixXcd ifft(const Eigen::MatrixXcd& X, int n);
+    Eigen::MatrixXcd ifft(const Eigen::MatrixXcd& X, int n, int dim);
 }
 
 #endif // FFT_LIBRARY_H
