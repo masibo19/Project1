@@ -30,8 +30,8 @@ int main() {
     Eigen::MatrixXcd Y6 =  FFTLibrary::ifft(X, 4, 2);  // 沿列方向计算 IFFT
     std::cout << "ifft(X, N, 2):\n" << std::endl;
     std::cout << Y6 << std::endl;
-    std::vector<float> A = {1, 1, 1};
-    std::vector<float> B ={1, 1, 0, 0, 0, 1, 1};
+    std::vector<float> A = {1, 0, 1};
+    std::vector<float> B ={2, 7};
     std::vector<float> result = FFTLibrary::convolve(A, B);
     std::cout<< "conv(A, B)" << std::endl;
     for(auto element : result){
