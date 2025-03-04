@@ -15,6 +15,8 @@ namespace FFTLibrary {
     Eigen::MatrixXcd ifft(const Eigen::MatrixXcd& X);
     Eigen::MatrixXcd ifft(const Eigen::MatrixXcd& X, int n);
     Eigen::MatrixXcd ifft(const Eigen::MatrixXcd& X, int n, int dim);
+    std::vector<float> convolve(std::vector<float>& r1, std::vector<float>& r2);
+
 }
 
 #endif // FFT_LIBRARY_H
